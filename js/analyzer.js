@@ -1,6 +1,6 @@
 /**
- * Text Analyzer & Formatter Module
- * Calculates comprehensive text metrics and provides formatting & case transformations.
+ * Text Analyzer & Converter Module
+ * Real-time text metrics, case transformations, Base64/URL encoding/decoding.
  */
 
 const TextAnalyzer = (() => {
@@ -20,7 +20,7 @@ const TextAnalyzer = (() => {
     copyBtn = document.getElementById("copy-analyzer-btn");
     clearBtn = document.getElementById("clear-text-btn");
 
-    textarea.addEventListener("input", analyze);
+    textarea?.addEventListener("input", analyze);
 
     // Transformation Buttons
     document.querySelectorAll("[data-action]").forEach((btn) => {
@@ -29,19 +29,19 @@ const TextAnalyzer = (() => {
       });
     });
 
-    clearBtn.addEventListener("click", () => {
+    clearBtn?.addEventListener("click", () => {
       textarea.value = "";
       analyze();
       textarea.focus();
     });
 
-    copyBtn.addEventListener("click", () => {
+    copyBtn?.addEventListener("click", () => {
       if (!textarea.value) {
         window.ToolboxApp?.showToast("ტექსტი ცარიელია");
         return;
       }
       navigator.clipboard.writeText(textarea.value).then(() => {
-        window.ToolboxApp?.showToast("ტექსტი დაკოპირდა! 📋");
+        window.ToolboxApp?.showToast("დაკოპირდა გაცვლის ბუფერში");
       });
     });
 
@@ -49,36 +49,31 @@ const TextAnalyzer = (() => {
   }
 
   function analyze() {
+    if (!textarea) return;
     const text = textarea.value;
 
-    // Characters
     const charCount = text.length;
     const charNoSpaceCount = text.replace(/\s/g, "").length;
 
-    // Words
     const trimmed = text.trim();
     const wordList = trimmed ? trimmed.split(/\s+/).filter(Boolean) : [];
     const wordCount = wordList.length;
 
-    // Sentences
     const sentenceList = trimmed ? trimmed.split(/[.!?]+/).filter((s) => s.trim().length > 0) : [];
     const sentenceCount = sentenceList.length;
 
-    // Paragraphs
     const paraList = text ? text.split(/\n+/).filter((p) => p.trim().length > 0) : [];
     const paraCount = paraList.length;
 
-    // Reading time: avg 200 words per minute
     const readMinutes = Math.ceil(wordCount / 200);
     const readTimeStr = wordCount === 0 ? "0 წთ" : `~${readMinutes} წთ`;
 
-    // Update DOM
-    statWords.textContent = wordCount.toLocaleString();
-    statChars.textContent = charCount.toLocaleString();
-    statCharsNoSpace.textContent = charNoSpaceCount.toLocaleString();
-    statSentences.textContent = sentenceCount.toLocaleString();
-    statParagraphs.textContent = paraCount.toLocaleString();
-    statReadTime.textContent = readTimeStr;
+    if (statWords) statWords.textContent = wordCount.toLocaleString();
+    if (statChars) statChars.textContent = charCount.toLocaleString();
+    if (statCharsNoSpace) statCharsNoSpace.textContent = charNoSpaceCount.toLocaleString();
+    if (statSentences) statSentences.textContent = sentenceCount.toLocaleString();
+    if (statParagraphs) statParagraphs.textContent = paraCount.toLocaleString();
+    if (statReadTime) statReadTime.textContent = readTimeStr;
   }
 
   function applyAction(action) {
@@ -87,81 +82,101 @@ const TextAnalyzer = (() => {
 
     let result = text;
 
-    switch (action) {
-      case "uppercase":
-        result = text.toUpperCase();
-        break;
+    try {
+      switch (action) {
+        case "uppercase":
+          result = text.toUpperCase();
+          break;
 
-      case "lowercase":
-        result = text.toLowerCase();
-        break;
+        case "lowercase":
+          result = text.toLowerCase();
+          break;
 
-      case "titlecase":
-        result = text.replace(
-          /\w\S*/g,
-          (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-        );
-        break;
+        case "titlecase":
+          result = text.replace(
+            /\w\S*/g,
+            (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+          );
+          break;
 
-      case "sentencecase":
-        result = text
-          .toLowerCase()
-          .replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
-        break;
+        case "sentencecase":
+          result = text
+            .toLowerCase()
+            .replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+          break;
 
-      case "camelcase":
-        result = text
-          .replace(/[^a-zA-Z0-9\s_-]/g, "")
-          .split(/[\s_-]+/)
-          .filter(Boolean)
-          .map((w, i) => (i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()))
-          .join("");
-        break;
+        case "camelcase":
+          result = text
+            .replace(/[^a-zA-Z0-9\s_-]/g, "")
+            .split(/[\s_-]+/)
+            .filter(Boolean)
+            .map((w, i) => (i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()))
+            .join("");
+          break;
 
-      case "snakecase":
-        result = text
-          .replace(/[^a-zA-Z0-9\s_-]/g, "")
-          .trim()
-          .split(/[\s_-]+/)
-          .filter(Boolean)
-          .map((w) => w.toLowerCase())
-          .join("_");
-        break;
+        case "snakecase":
+          result = text
+            .replace(/[^a-zA-Z0-9\s_-]/g, "")
+            .trim()
+            .split(/[\s_-]+/)
+            .filter(Boolean)
+            .map((w) => w.toLowerCase())
+            .join("_");
+          break;
 
-      case "kebabcase":
-        result = text
-          .replace(/[^a-zA-Z0-9\s_-]/g, "")
-          .trim()
-          .split(/[\s_-]+/)
-          .filter(Boolean)
-          .map((w) => w.toLowerCase())
-          .join("-");
-        break;
+        case "kebabcase":
+          result = text
+            .replace(/[^a-zA-Z0-9\s_-]/g, "")
+            .trim()
+            .split(/[\s_-]+/)
+            .filter(Boolean)
+            .map((w) => w.toLowerCase())
+            .join("-");
+          break;
 
-      case "clean-spaces":
-        result = text
-          .split("\n")
-          .map((line) => line.trim().replace(/[ \t]+/g, " "))
-          .filter((line, i, arr) => line !== "" || (i > 0 && arr[i - 1] !== ""))
-          .join("\n")
-          .trim();
-        break;
+        case "clean-spaces":
+          result = text
+            .split("\n")
+            .map((line) => line.trim().replace(/[ \t]+/g, " "))
+            .filter((line, i, arr) => line !== "" || (i > 0 && arr[i - 1] !== ""))
+            .join("\n")
+            .trim();
+          break;
 
-      case "sort-lines":
-        result = text
-          .split("\n")
-          .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
-          .join("\n");
-        break;
+        case "sort-lines":
+          result = text
+            .split("\n")
+            .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
+            .join("\n");
+          break;
 
-      case "reverse":
-        result = text.split("").reverse().join("");
-        break;
+        case "reverse":
+          result = text.split("").reverse().join("");
+          break;
+
+        case "base64-encode":
+          result = btoa(unescape(encodeURIComponent(text)));
+          break;
+
+        case "base64-decode":
+          result = decodeURIComponent(escape(atob(text)));
+          break;
+
+        case "url-encode":
+          result = encodeURIComponent(text);
+          break;
+
+        case "url-decode":
+          result = decodeURIComponent(text);
+          break;
+      }
+
+      textarea.value = result;
+      analyze();
+      window.ToolboxApp?.showToast("მოქმედება შესრულდა");
+    } catch (err) {
+      window.ToolboxApp?.showToast(`შეცდომა: ${err.message}`);
     }
-
-    textarea.value = result;
-    analyze();
-    window.ToolboxApp?.showToast("ტრანსფორმაცია შესრულდა! ✨");
   }
 
   return { init, analyze };
