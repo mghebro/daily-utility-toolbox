@@ -1,6 +1,6 @@
 /**
- * Password Generator Module
- * Provides cryptographically secure password generation with entropy-based strength calculation.
+ * Password & Passphrase Generator Module
+ * Provides cryptographically secure password and memorable passphrase generation with entropy calculation.
  */
 
 const PasswordGenerator = (() => {
@@ -13,15 +13,29 @@ const PasswordGenerator = (() => {
 
   const AMBIGUOUS_CHARS = /[il1Lo0O|]/g;
 
-  // DOM Elements
-  let lengthSlider, lengthValue, displayEl, strengthBar, strengthLabel;
+  // Curated list of distinct, recognizable English words for memorable passphrases
+  const WORD_LIST = [
+    "amber", "anchor", "apple", "beacon", "breeze", "bridge", "canyon", "castle", "cedar", "cipher",
+    "clover", "cobalt", "comet", "coral", "crater", "crystal", "delta", "drift", "echo", "ember",
+    "falcon", "feather", "forest", "fossil", "galaxy", "glacier", "granite", "harbor", "haven", "horizon",
+    "island", "jaguar", "jungle", "lagoon", "lantern", "legend", "lunar", "meadow", "meteor", "mirage",
+    "monarch", "mosaic", "nebula", "nexus", "oasis", "orbit", "palace", "pathway", "phoenix", "pinnacle",
+    "planet", "prism", "pulse", "pyramid", "quantum", "quartz", "quiver", "radiant", "ripple", "rover",
+    "saffron", "shadow", "sierra", "silver", "solace", "spark", "summit", "timber", "torch", "tundra",
+    "valley", "velvet", "vessel", "vortex", "voyage", "walnut", "whisper", "wilder", "willow", "zenith"
+  ];
+
+  let mode = "password"; // "password" or "passphrase"
+  let lengthSlider, lengthValue, displayEl, strengthFill, strengthLabel;
   let chkUpper, chkLower, chkNumbers, chkSymbols, chkAmbiguous;
+  let wordsSlider, wordsValue, sepSelect, chkCapitalize, chkIncludeNumber;
+  let passwordOptionsContainer, passphraseOptionsContainer;
 
   function init() {
     lengthSlider = document.getElementById("password-length");
     lengthValue = document.getElementById("length-value");
     displayEl = document.getElementById("password-display");
-    strengthBar = document.getElementById("strength-bar");
+    strengthFill = document.getElementById("strength-fill");
     strengthLabel = document.getElementById("strength-label");
 
     chkUpper = document.getElementById("pw-uppercase");
@@ -30,15 +44,27 @@ const PasswordGenerator = (() => {
     chkSymbols = document.getElementById("pw-symbols");
     chkAmbiguous = document.getElementById("pw-exclude-ambiguous");
 
-    // Event Listeners
-    lengthSlider.addEventListener("input", () => {
+    wordsSlider = document.getElementById("passphrase-words");
+    wordsValue = document.getElementById("words-value");
+    sepSelect = document.getElementById("passphrase-sep");
+    chkCapitalize = document.getElementById("passphrase-cap");
+    chkIncludeNumber = document.getElementById("passphrase-num");
+
+    passwordOptionsContainer = document.getElementById("password-options");
+    passphraseOptionsContainer = document.getElementById("passphrase-options");
+
+    // Mode Toggle Pills
+    document.getElementById("mode-pw-btn")?.addEventListener("click", () => switchMode("password"));
+    document.getElementById("mode-phrase-btn")?.addEventListener("click", () => switchMode("passphrase"));
+
+    // Event Listeners for Password
+    lengthSlider?.addEventListener("input", () => {
       lengthValue.textContent = lengthSlider.value;
       generate();
     });
 
     [chkUpper, chkLower, chkNumbers, chkSymbols, chkAmbiguous].forEach((el) => {
-      el.addEventListener("change", () => {
-        // Ensure at least one set is checked
+      el?.addEventListener("change", () => {
         if (!chkUpper.checked && !chkLower.checked && !chkNumbers.checked && !chkSymbols.checked) {
           chkLower.checked = true;
         }
@@ -46,28 +72,55 @@ const PasswordGenerator = (() => {
       });
     });
 
-    document.getElementById("pw-regenerate-btn").addEventListener("click", generate);
+    // Event Listeners for Passphrase
+    wordsSlider?.addEventListener("input", () => {
+      wordsValue.textContent = wordsSlider.value;
+      generate();
+    });
+    sepSelect?.addEventListener("change", generate);
+    chkCapitalize?.addEventListener("change", generate);
+    chkIncludeNumber?.addEventListener("change", generate);
 
-    document.getElementById("copy-password-btn").addEventListener("click", () => {
+    document.getElementById("pw-regenerate-btn")?.addEventListener("click", generate);
+
+    document.getElementById("copy-password-btn")?.addEventListener("click", () => {
       const pwd = displayEl.textContent;
       if (!pwd) return;
       navigator.clipboard.writeText(pwd).then(() => {
-        window.ToolboxApp?.showToast("პაროლი წარმატებით დაკოპირდა! 📋");
+        window.ToolboxApp?.showToast("დაკოპირდა გაცვლის ბუფერში");
       });
     });
 
     // Preset Buttons
-    document.querySelectorAll("[data-preset]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        applyPreset(btn.dataset.preset);
-      });
+    document.querySelectorAll("[data-pw-preset]").forEach((btn) => {
+      btn.addEventListener("click", () => applyPreset(btn.dataset.pwPreset));
     });
 
-    // Initial generate
+    generate();
+  }
+
+  function switchMode(newMode) {
+    mode = newMode;
+    const pwBtn = document.getElementById("mode-pw-btn");
+    const phraseBtn = document.getElementById("mode-phrase-btn");
+
+    if (mode === "password") {
+      pwBtn?.classList.add("active");
+      phraseBtn?.classList.remove("active");
+      if (passwordOptionsContainer) passwordOptionsContainer.style.display = "block";
+      if (passphraseOptionsContainer) passphraseOptionsContainer.style.display = "none";
+    } else {
+      phraseBtn?.classList.add("active");
+      pwBtn?.classList.remove("active");
+      if (passwordOptionsContainer) passwordOptionsContainer.style.display = "none";
+      if (passphraseOptionsContainer) passphraseOptionsContainer.style.display = "block";
+    }
     generate();
   }
 
   function applyPreset(preset) {
+    if (mode !== "password") switchMode("password");
+
     if (preset === "pin") {
       lengthSlider.value = 4;
       chkUpper.checked = false;
@@ -90,22 +143,15 @@ const PasswordGenerator = (() => {
       chkSymbols.checked = true;
       chkAmbiguous.checked = false;
     } else if (preset === "strong") {
-      lengthSlider.value = 32;
+      lengthSlider.value = 28;
       chkUpper.checked = true;
       chkLower.checked = true;
       chkNumbers.checked = true;
       chkSymbols.checked = true;
       chkAmbiguous.checked = false;
-    } else if (preset === "alphanumeric") {
-      lengthSlider.value = 20;
-      chkUpper.checked = true;
-      chkLower.checked = true;
-      chkNumbers.checked = true;
-      chkSymbols.checked = false;
-      chkAmbiguous.checked = false;
     }
 
-    lengthValue.textContent = lengthSlider.value;
+    if (lengthValue) lengthValue.textContent = lengthSlider.value;
     generate();
   }
 
@@ -116,6 +162,14 @@ const PasswordGenerator = (() => {
   }
 
   function generate() {
+    if (mode === "passphrase") {
+      generatePassphrase();
+    } else {
+      generatePassword();
+    }
+  }
+
+  function generatePassword() {
     let pool = "";
     const guaranteed = [];
 
@@ -159,7 +213,6 @@ const PasswordGenerator = (() => {
       resultChars.push(pool[getSecureRandomInt(pool.length)]);
     }
 
-    // Shuffle characters securely using Fisher-Yates
     for (let i = resultChars.length - 1; i > 0; i--) {
       const j = getSecureRandomInt(i + 1);
       [resultChars[i], resultChars[j]] = [resultChars[j], resultChars[i]];
@@ -167,39 +220,68 @@ const PasswordGenerator = (() => {
 
     const password = resultChars.slice(0, length).join("");
     displayEl.textContent = password;
-    updateStrength(password, pool.length);
+    updateStrength(password.length * (Math.log(pool.length) / Math.log(2)));
   }
 
-  function updateStrength(password, poolSize) {
-    // Entropy = length * log2(poolSize)
-    const entropy = password.length * (Math.log(Math.max(poolSize, 2)) / Math.log(2));
+  function generatePassphrase() {
+    const wordCount = parseInt(wordsSlider?.value || 4, 10);
+    const sep = sepSelect?.value || "-";
+    const cap = chkCapitalize?.checked ?? true;
+    const addNum = chkIncludeNumber?.checked ?? true;
 
+    const chosen = [];
+    for (let i = 0; i < wordCount; i++) {
+      let w = WORD_LIST[getSecureRandomInt(WORD_LIST.length)];
+      if (cap) {
+        w = w.charAt(0).toUpperCase() + w.slice(1);
+      }
+      chosen.push(w);
+    }
+
+    if (addNum) {
+      const randomNum = getSecureRandomInt(90) + 10;
+      chosen[chosen.length - 1] += randomNum;
+    }
+
+    const phrase = chosen.join(sep);
+    displayEl.textContent = phrase;
+
+    // Entropy: wordCount * log2(WORD_LIST.length)
+    const entropy = wordCount * (Math.log(WORD_LIST.length) / Math.log(2)) + (addNum ? 6.6 : 0);
+    updateStrength(entropy);
+  }
+
+  function updateStrength(entropy) {
     let percent = 0;
     let label = "სუსტი";
-    let color = "var(--danger)";
+    let color = "var(--rose)";
 
     if (entropy < 35) {
       percent = 25;
-      label = "სუსტი (მარტივი გასატეხი)";
-      color = "#ef4444";
-    } else if (entropy < 60) {
+      label = "სუსტი";
+      color = "var(--rose)";
+    } else if (entropy < 55) {
       percent = 50;
       label = "საშუალო";
-      color = "#f59e0b";
-    } else if (entropy < 85) {
+      color = "var(--amber)";
+    } else if (entropy < 80) {
       percent = 75;
       label = "ძლიერი";
-      color = "#3b82f6";
+      color = "var(--accent)";
     } else {
       percent = 100;
-      label = "ძალიან ძლიერი (მაღალი უსაფრთხოება)";
-      color = "#10b981";
+      label = "ძალიან მაღალი დაცულობა";
+      color = "var(--emerald)";
     }
 
-    strengthBar.style.width = `${percent}%`;
-    strengthBar.style.backgroundColor = color;
-    strengthLabel.textContent = label;
-    strengthLabel.style.color = color;
+    if (strengthFill) {
+      strengthFill.style.width = `${percent}%`;
+      strengthFill.style.backgroundColor = color;
+    }
+    if (strengthLabel) {
+      strengthLabel.textContent = `${label} (${Math.round(entropy)} bits)`;
+      strengthLabel.style.color = color;
+    }
   }
 
   return { init, generate };
