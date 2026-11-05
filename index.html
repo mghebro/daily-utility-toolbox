@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Utility Toolbox - ყოველდღიური ხელსაწყოები</title>
+  <title>Daily Utility Toolbox</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -11,15 +11,24 @@
     <!-- Header -->
     <header class="app-header">
       <div class="brand">
-        <div class="brand-icon">🛠️</div>
+        <div class="brand-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </div>
         <div class="brand-info">
-          <h1>Utility Toolbox</h1>
-          <p>მარტივი და სწრაფი ყოველდღიური ხელსაწყოები</p>
+          <h1>Utility Toolbox <span class="version-tag">v2.0</span></h1>
+          <p>სწრაფი, დაცული და ოფლაინ სამუშაო ხელსაწყოები</p>
         </div>
       </div>
       <div class="header-actions">
-        <button id="theme-toggle" class="theme-toggle-btn" title="თემის შეცვლა">
-          <span id="theme-icon">☀️</span> <span id="theme-text">Light Mode</span>
+        <button id="theme-toggle" class="theme-toggle-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+          <span id="theme-text">Light Mode</span>
         </button>
       </div>
     </header>
@@ -27,88 +36,167 @@
     <!-- Navigation Tabs -->
     <nav class="tabs-nav" role="tablist">
       <button class="tab-btn active" data-tab="password" role="tab" aria-selected="true">
-        🔐 პაროლები
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        პაროლები <kbd>1</kbd>
       </button>
+
       <button class="tab-btn" data-tab="qrcode" role="tab" aria-selected="false">
-        📱 QR კოდი
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        QR კოდი <kbd>2</kbd>
       </button>
+
       <button class="tab-btn" data-tab="analyzer" role="tab" aria-selected="false">
-        📝 ტექსტის ანალიზი
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        ტექსტი & კოდირება <kbd>3</kbd>
+      </button>
+
+      <button class="tab-btn" data-tab="json" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        JSON სტუდია <kbd>4</kbd>
+      </button>
+
+      <button class="tab-btn" data-tab="color" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a10 10 0 0 0 0 20v-20z"></path>
+        </svg>
+        ფერები & კონტრასტი <kbd>5</kbd>
       </button>
     </nav>
 
-    <!-- TAB 1: Password Generator -->
+    <!-- TAB 1: Password & Passphrase Generator -->
     <section id="tab-password" class="tab-content active" role="tabpanel">
       <div class="card">
-        <div class="card-title">
-          <span>🔐 უსაფრთხო პაროლის გენერატორი</span>
-          <button id="pw-regenerate-btn" class="btn btn-secondary btn-sm" title="ახალი პაროლის გენერირება">
-            🔄 ხელახლა გენერირება
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>უსაფრთხო პაროლის გენერატორი</h2>
+            <p>კრიპტოგრაფიულად დაცული შემთხვევითი კომბინაციები და ფრაზები</p>
+          </div>
+          <button id="pw-regenerate-btn" class="btn btn-secondary btn-sm" title="ხელახლა გენერირება (Space)">
+            განახლება <kbd>Space</kbd>
           </button>
         </div>
 
-        <!-- Generated Result Display -->
-        <div class="result-box">
-          <span id="password-display" class="result-text">P@ssw0rd123!</span>
+        <!-- Mode selector: Password vs Passphrase -->
+        <div class="filter-chips">
+          <button id="mode-pw-btn" class="chip-btn active">სიმბოლური პაროლი</button>
+          <button id="mode-phrase-btn" class="chip-btn">დამახსოვრებადი ფრაზა (Passphrase)</button>
+        </div>
+
+        <!-- Result Box -->
+        <div class="display-output">
+          <span id="password-display" class="display-text">••••••••••••</span>
           <button id="copy-password-btn" class="btn btn-primary btn-sm">
-            📋 კოპირება
+            კოპირება
           </button>
         </div>
 
         <!-- Strength Indicator -->
         <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="form-label" style="margin: 0;">სიმძლავრე:</span>
-            <span id="strength-label" class="strength-text">ძალიან ძლიერი</span>
+          <div class="form-label">
+            <span>სიმძლავრე / ენტროპია</span>
+            <span id="strength-label">გამოთვლა...</span>
           </div>
-          <div class="strength-meter">
-            <div id="strength-bar" class="strength-bar" style="width: 100%; background-color: var(--success);"></div>
-          </div>
-        </div>
-
-        <!-- Quick Presets -->
-        <div class="form-group">
-          <label class="form-label">სწრაფი შაბლონები:</label>
-          <div class="preset-pills">
-            <button class="preset-pill" data-preset="pin">🔢 4-ციფრიანი PIN</button>
-            <button class="preset-pill" data-preset="pin6">🔢 6-ციფრიანი PIN</button>
-            <button class="preset-pill" data-preset="standard">🛡️ სტანდარტული (16 სიმბოლო)</button>
-            <button class="preset-pill" data-preset="strong">🔒 ულტრა ძლიერი (32 სიმბოლო)</button>
-            <button class="preset-pill" data-preset="alphanumeric">🔤 მხოლოდ ასოები და ციფრები</button>
+          <div class="strength-track">
+            <div id="strength-fill" class="strength-fill"></div>
           </div>
         </div>
 
-        <!-- Settings: Length -->
-        <div class="form-group">
-          <label class="form-label" for="password-length">სიმბოლოების რაოდენობა:</label>
-          <div class="range-container">
-            <input type="range" id="password-length" class="range-slider" min="4" max="64" value="16" />
-            <span id="length-value" class="range-badge">16</span>
+        <!-- Mode A: Character Options -->
+        <div id="password-options">
+          <div class="form-group">
+            <div class="filter-chips">
+              <button class="chip-btn" data-pw-preset="pin">4-ნიშნა PIN</button>
+              <button class="chip-btn" data-pw-preset="pin6">6-ნიშნა PIN</button>
+              <button class="chip-btn" data-pw-preset="standard">სტანდარტული (16)</button>
+              <button class="chip-btn" data-pw-preset="strong">მაღალი დაცვა (28)</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <span>სიმბოლოების რაოდენობა</span>
+              <span id="length-value" class="range-badge">16</span>
+            </div>
+            <div class="range-wrapper">
+              <input type="range" id="password-length" class="range-slider" min="6" max="64" value="16" />
+            </div>
+          </div>
+
+          <div class="checkbox-grid">
+            <label class="checkbox-card">
+              <input type="checkbox" id="pw-uppercase" checked />
+              <span>დიდი ასოები (A-Z)</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="pw-lowercase" checked />
+              <span>პატარა ასოები (a-z)</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="pw-numbers" checked />
+              <span>ციფრები (0-9)</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="pw-symbols" checked />
+              <span>სპეც-სიმბოლოები (!@#$%^&*)</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="pw-exclude-ambiguous" />
+              <span>ორაზროვნების გარეშე (1, l, I, 0, O)</span>
+            </label>
           </div>
         </div>
 
-        <!-- Settings: Checkboxes -->
-        <div class="checkbox-grid">
-          <label class="checkbox-label">
-            <input type="checkbox" id="pw-uppercase" checked />
-            <span>დიდი ასოები (A-Z)</span>
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="pw-lowercase" checked />
-            <span>პატარა ასოები (a-z)</span>
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="pw-numbers" checked />
-            <span>ციფრები (0-9)</span>
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="pw-symbols" checked />
-            <span>სიმბოლოები (!@#$%^&*)</span>
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="pw-exclude-ambiguous" />
-            <span>ორაზროვნის გამორიცხვა (l, 1, I, O, 0)</span>
-          </label>
+        <!-- Mode B: Passphrase Options -->
+        <div id="passphrase-options" style="display: none;">
+          <div class="form-group">
+            <div class="form-label">
+              <span>სიტყვების რაოდენობა</span>
+              <span id="words-value" class="range-badge">4</span>
+            </div>
+            <div class="range-wrapper">
+              <input type="range" id="passphrase-words" class="range-slider" min="3" max="8" value="4" />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="passphrase-sep">გამყოფი სიმბოლო</label>
+              <select id="passphrase-sep" class="form-select">
+                <option value="-">დეფისი (-)</option>
+                <option value="_">ქვედა ტირე (_)</option>
+                <option value=".">წერტილი (.)</option>
+                <option value=" ">სფეისი ( )</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="checkbox-grid">
+            <label class="checkbox-card">
+              <input type="checkbox" id="passphrase-cap" checked />
+              <span>პირველი ასოების გაზრდა (TitleCase)</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="passphrase-num" checked />
+              <span>ციფრის დამატება ბოლოში</span>
+            </label>
+          </div>
         </div>
       </div>
     </section>
@@ -116,147 +204,240 @@
     <!-- TAB 2: QR Code Generator -->
     <section id="tab-qrcode" class="tab-content" role="tabpanel">
       <div class="card">
-        <div class="card-title">
-          <span>📱 QR კოდების გენერატორი</span>
-        </div>
-
-        <!-- QR Type Selector -->
-        <div class="form-group">
-          <label class="form-label">ტიპი:</label>
-          <div class="preset-pills">
-            <button class="preset-pill active" id="qr-type-text-btn">🔗 ბმული / ტექსტი</button>
-            <button class="preset-pill" id="qr-type-wifi-btn">📶 Wi-Fi ქსელი</button>
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>QR კოდების გენერატორი</h2>
+            <p>ოფლაინ გენერაცია ბმულებისთვის, ტექსტისთვის და Wi-Fi ქსელებისთვის</p>
           </div>
         </div>
 
-        <!-- QR Text / URL Input -->
+        <div class="filter-chips">
+          <button class="chip-btn active" id="qr-type-text-btn">ბმული / ტექსტი</button>
+          <button class="chip-btn" id="qr-type-wifi-btn">Wi-Fi ქსელი</button>
+        </div>
+
         <div id="qr-text-group" class="form-group">
-          <label class="form-label" for="qr-input">შეიყვანეთ ბმული ან ტექსტი:</label>
-          <textarea id="qr-input" class="form-textarea" placeholder="მაგ: https://github.com ან ნებისმიერი ტექსტი...">https://github.com</textarea>
+          <label class="form-label" for="qr-input">კონტენტი</label>
+          <textarea id="qr-input" class="form-textarea" placeholder="https://..." style="min-height: 90px;">https://github.com/mghebro/daily-utility-toolbox</textarea>
         </div>
 
-        <!-- QR Wi-Fi Inputs (hidden by default) -->
         <div id="qr-wifi-group" class="form-group" style="display: none;">
-          <div class="form-group">
-            <label class="form-label" for="wifi-ssid">ქსელის სახელი (SSID):</label>
-            <input type="text" id="wifi-ssid" class="form-input" placeholder="MyHomeWiFi" />
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label class="form-label" for="wifi-ssid">ქსელის SSID</label>
+              <input type="text" id="wifi-ssid" class="form-input" placeholder="HomeNetwork" />
+            </div>
+            <div>
+              <label class="form-label" for="wifi-password">პაროლი</label>
+              <input type="text" id="wifi-password" class="form-input" placeholder="Password123" />
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="wifi-password">პაროლი:</label>
-            <input type="text" id="wifi-password" class="form-input" placeholder="WiFiSecret123" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="wifi-auth">დაცვის ტიპი:</label>
+          <div>
+            <label class="form-label" for="wifi-auth">უსაფრთხოების ტიპი</label>
             <select id="wifi-auth" class="form-select">
               <option value="WPA">WPA/WPA2/WPA3</option>
               <option value="WEP">WEP</option>
-              <option value="nopass">პაროლის გარეშე (ღია)</option>
+              <option value="nopass">ღია ქსელი (პაროლის გარეშე)</option>
             </select>
           </div>
         </div>
 
-        <!-- QR Customization Colors -->
-        <div class="checkbox-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="form-group">
-            <label class="form-label" for="qr-fg-color">QR-ის ფერი:</label>
-            <input type="color" id="qr-fg-color" value="#000000" class="form-input" style="height: 44px; padding: 4px; cursor: pointer;" />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <label class="form-label" for="qr-fg-color">QR-ის ფერი</label>
+            <input type="color" id="qr-fg-color" value="#0f172a" class="form-input" style="height: 38px; padding: 2px; cursor: pointer;" />
           </div>
-          <div class="form-group">
-            <label class="form-label" for="qr-bg-color">ფონის ფერი:</label>
-            <input type="color" id="qr-bg-color" value="#ffffff" class="form-input" style="height: 44px; padding: 4px; cursor: pointer;" />
+          <div>
+            <label class="form-label" for="qr-bg-color">ფონის ფერი</label>
+            <input type="color" id="qr-bg-color" value="#ffffff" class="form-input" style="height: 38px; padding: 2px; cursor: pointer;" />
           </div>
         </div>
 
-        <!-- QR Render Output -->
-        <div class="qr-preview-container">
+        <div class="qr-preview-wrapper">
           <div id="qrcode-render"></div>
         </div>
 
-        <!-- QR Action Buttons -->
         <div style="display: flex; gap: 10px; justify-content: center;">
           <button id="download-qr-btn" class="btn btn-primary">
-            ⬇️ ჩამოტვირთე PNG
+            ჩამოტვირთვა (PNG)
           </button>
           <button id="copy-qr-text-btn" class="btn btn-secondary">
-            📋 ტექსტის კოპირება
+            მონაცემის კოპირება
           </button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: Text Analyzer -->
+    <!-- TAB 3: Text Suite & Encoders -->
     <section id="tab-analyzer" class="tab-content" role="tabpanel">
       <div class="card">
-        <div class="card-title">
-          <span>📝 ტექსტის ანალიზატორი და ფორმატირება</span>
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>ტექსტის ანალიზი & კოდირება</h2>
+            <p>მეტრიკები, რეგისტრის ცვლილება, Base64 და URL ენკოდერი</p>
+          </div>
           <button id="clear-text-btn" class="btn btn-secondary btn-sm">
-            🧹 გასუფთავება
+            გასუფთავება
           </button>
         </div>
 
-        <!-- Input Area -->
+        <div class="stats-matrix">
+          <div class="stat-box">
+            <div id="stat-words" class="num">0</div>
+            <div class="lbl">სიტყვა</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-chars" class="num">0</div>
+            <div class="lbl">სიმბოლო</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-chars-nospace" class="num">0</div>
+            <div class="lbl">სფეისების გარეშე</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-sentences" class="num">0</div>
+            <div class="lbl">წინადადება</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-paragraphs" class="num">0</div>
+            <div class="lbl">აბზაცი</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-read-time" class="num">0 წთ</div>
+            <div class="lbl">კითხვის დრო</div>
+          </div>
+        </div>
+
         <div class="form-group">
-          <label class="form-label" for="text-analyzer-input">ჩასვით ან აკრიფეთ ტექსტი:</label>
-          <textarea id="text-analyzer-input" class="form-textarea" style="min-height: 160px;" placeholder="აკრიფეთ ან ჩასვით ტექსტი აქ..."></textarea>
+          <textarea id="text-analyzer-input" class="form-textarea" style="min-height: 160px;" placeholder="ჩასვით ან აკრიფეთ ტექსტი..."></textarea>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div id="stat-words" class="stat-value">0</div>
-            <div class="stat-label">სიტყვა</div>
+        <div class="form-label">რეგისტრის ტრანსფორმაციები</div>
+        <div class="action-toolbar">
+          <button class="btn btn-secondary btn-sm" data-action="uppercase">UPPERCASE</button>
+          <button class="btn btn-secondary btn-sm" data-action="lowercase">lowercase</button>
+          <button class="btn btn-secondary btn-sm" data-action="titlecase">Title Case</button>
+          <button class="btn btn-secondary btn-sm" data-action="sentencecase">Sentence case</button>
+          <button class="btn btn-secondary btn-sm" data-action="camelcase">camelCase</button>
+          <button class="btn btn-secondary btn-sm" data-action="snakecase">snake_case</button>
+          <button class="btn btn-secondary btn-sm" data-action="kebabcase">kebab-case</button>
+        </div>
+
+        <div class="form-label" style="margin-top: 14px;">ინსტრუმენტები & ენკოდერები</div>
+        <div class="action-toolbar">
+          <button class="btn btn-secondary btn-sm" data-action="clean-spaces">სფეისების გაწმენდა</button>
+          <button class="btn btn-secondary btn-sm" data-action="sort-lines">ხაზების დალაგება (A-Z)</button>
+          <button class="btn btn-secondary btn-sm" data-action="reverse">შებრუნება</button>
+          <button class="btn btn-secondary btn-sm" data-action="base64-encode">Base64 Encode</button>
+          <button class="btn btn-secondary btn-sm" data-action="base64-decode">Base64 Decode</button>
+          <button class="btn btn-secondary btn-sm" data-action="url-encode">URL Encode</button>
+          <button class="btn btn-secondary btn-sm" data-action="url-decode">URL Decode</button>
+          <button class="btn btn-primary btn-sm" id="copy-analyzer-btn" style="margin-left: auto;">კოპირება</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: JSON Studio -->
+    <section id="tab-json" class="tab-content" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>JSON სტუდია</h2>
+            <p>ფორმატირება, შეკუმშვა და სინტაქსური ვალიდაცია</p>
           </div>
-          <div class="stat-card">
-            <div id="stat-chars" class="stat-value">0</div>
-            <div class="stat-label">სიმბოლო</div>
-          </div>
-          <div class="stat-card">
-            <div id="stat-chars-nospace" class="stat-value">0</div>
-            <div class="stat-label">სფეისების გარეშე</div>
-          </div>
-          <div class="stat-card">
-            <div id="stat-sentences" class="stat-value">0</div>
-            <div class="stat-label">წინადადება</div>
-          </div>
-          <div class="stat-card">
-            <div id="stat-paragraphs" class="stat-value">0</div>
-            <div class="stat-label">აბზაცი</div>
-          </div>
-          <div class="stat-card">
-            <div id="stat-read-time" class="stat-value">0 წთ</div>
-            <div class="stat-label">კითხვის დრო</div>
+          <div>
+            <span id="json-status" class="contrast-pill">შეიყვანეთ JSON</span>
           </div>
         </div>
 
-        <!-- Quick Transform Buttons -->
-        <label class="form-label">ტექსტის ტრანსფორმაციები:</label>
-        <div class="action-buttons-group">
-          <button class="btn btn-secondary btn-sm" data-action="uppercase">🔠 UPPERCASE</button>
-          <button class="btn btn-secondary btn-sm" data-action="lowercase">🔡 lowercase</button>
-          <button class="btn btn-secondary btn-sm" data-action="titlecase">🔤 Title Case</button>
-          <button class="btn btn-secondary btn-sm" data-action="sentencecase">📝 Sentence case</button>
-          <button class="btn btn-secondary btn-sm" data-action="camelcase">🐪 camelCase</button>
-          <button class="btn btn-secondary btn-sm" data-action="snakecase">🐍 snake_case</button>
-          <button class="btn btn-secondary btn-sm" data-action="kebabcase">🍢 kebab-case</button>
+        <div class="form-group">
+          <textarea id="json-input" class="form-textarea" style="min-height: 220px;" placeholder='{"key": "value", "items": [1, 2, 3]}'></textarea>
         </div>
 
-        <!-- Cleanup Tools -->
-        <div class="action-buttons-group" style="margin-top: 10px;">
-          <button class="btn btn-secondary btn-sm" data-action="clean-spaces">✂️ ზედმეტი სფეისების წაშლა</button>
-          <button class="btn btn-secondary btn-sm" data-action="sort-lines">🔀 ხაზების დალაგება (A-Z)</button>
-          <button class="btn btn-secondary btn-sm" data-action="reverse">🔄 ტექსტის შებრუნება</button>
-          <button class="btn btn-primary btn-sm" id="copy-analyzer-btn" style="margin-left: auto;">📋 შედეგის კოპირება</button>
+        <div class="action-toolbar">
+          <button id="json-format-btn" class="btn btn-primary btn-sm">დაფორმატება (Prettify)</button>
+          <button id="json-minify-btn" class="btn btn-secondary btn-sm">შეკუმშვა (Minify)</button>
+          <button id="json-validate-btn" class="btn btn-secondary btn-sm">ვალიდაცია</button>
+          <button id="json-clear-btn" class="btn btn-ghost btn-sm">გასუფთავება</button>
+          <button id="json-copy-btn" class="btn btn-secondary btn-sm" style="margin-left: auto;">კოპირება</button>
         </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Color Studio & Contrast -->
+    <section id="tab-color" class="tab-content" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>ფერების სტუდია & კონტრასტი</h2>
+            <p>HEX / RGB / HSL კონვერტაცია, WCAG წაკითხვადობა და პალიტრები</p>
+          </div>
+          <button id="random-color-btn" class="btn btn-secondary btn-sm">
+            შემთხვევითი ფერი
+          </button>
+        </div>
+
+        <!-- Color Preview & Contrast -->
+        <div id="color-preview" class="color-preview-box">
+          #3B82F6
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+          <div class="stat-box">
+            <div class="lbl">კონტრასტი თეთრ ფონზე (#FFF)</div>
+            <div id="contrast-white-val" class="num" style="margin: 6px 0;">3.80:1</div>
+            <div id="badge-aa-white" class="contrast-pill fail">დაბალი კონტრასტი</div>
+          </div>
+
+          <div class="stat-box">
+            <div class="lbl">კონტრასტი შავ ფონზე (#000)</div>
+            <div id="contrast-black-val" class="num" style="margin: 6px 0;">5.53:1</div>
+            <div id="badge-aa-black" class="contrast-pill pass">AA შესაფერისი</div>
+          </div>
+        </div>
+
+        <!-- Input & Picker -->
+        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <label class="form-label" for="color-picker">პალიტრა</label>
+            <input type="color" id="color-picker" value="#3b82f6" class="form-input" style="height: 40px; padding: 2px; cursor: pointer;" />
+          </div>
+          <div>
+            <label class="form-label" for="color-hex">HEX კოდი</label>
+            <input type="text" id="color-hex" class="form-input" value="#3B82F6" />
+          </div>
+        </div>
+
+        <!-- Formats Row -->
+        <div class="stats-matrix" style="grid-template-columns: 1fr 1fr;">
+          <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div class="lbl">RGB</div>
+              <div id="color-rgb" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600;">rgb(59, 130, 246)</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" data-copy-color="rgb">კოპირება</button>
+          </div>
+
+          <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div class="lbl">HSL</div>
+              <div id="color-hsl" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600;">hsl(217, 91%, 60%)</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" data-copy-color="hsl">კოპირება</button>
+          </div>
+        </div>
+
+        <div class="form-label" style="margin-top: 14px;">ტონალური პალიტრა (დააჭირეთ დასაკოპირებლად)</div>
+        <div id="color-palette-row" class="palette-row"></div>
       </div>
     </section>
 
     <!-- Footer -->
     <footer>
-      <p>Daily Utility Toolbox &bull; შექმნილია ადგილობრივად, 100% უსაფრთხო და ოფლაინ</p>
+      <p>Daily Utility Toolbox &bull; კლავიატურის მალსახმობები: <kbd>1</kbd>-<kbd>5</kbd> ტაბები, <kbd>Space</kbd> ახალი პაროლი</p>
     </footer>
   </div>
 
-  <!-- Toast Container -->
   <div id="toast-container" class="toast-container"></div>
 
   <!-- Scripts -->
@@ -264,6 +445,8 @@
   <script src="js/password.js"></script>
   <script src="js/qrcode-tool.js"></script>
   <script src="js/analyzer.js"></script>
+  <script src="js/json-tool.js"></script>
+  <script src="js/color-tool.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -12,16 +12,17 @@ const ToolboxApp = (() => {
     initTabs();
     initKeyboardShortcuts();
 
-    // Initialize submodules
+    // Initialize all tool modules
     PasswordGenerator.init();
     QRCodeTool.init();
     TextAnalyzer.init();
+    JSONTool.init();
+    ColorTool.init();
   }
 
   // --- Theme Handling ---
   function initTheme() {
     const themeBtn = document.getElementById("theme-toggle");
-    const themeIcon = document.getElementById("theme-icon");
     const themeText = document.getElementById("theme-text");
 
     const savedTheme = localStorage.getItem("toolbox-theme") || 
@@ -29,7 +30,7 @@ const ToolboxApp = (() => {
 
     applyTheme(savedTheme);
 
-    themeBtn.addEventListener("click", () => {
+    themeBtn?.addEventListener("click", () => {
       const current = document.documentElement.getAttribute("data-theme") || "dark";
       const next = current === "dark" ? "light" : "dark";
       applyTheme(next);
@@ -38,12 +39,8 @@ const ToolboxApp = (() => {
 
     function applyTheme(theme) {
       document.documentElement.setAttribute("data-theme", theme);
-      if (theme === "dark") {
-        themeIcon.textContent = "☀️";
-        themeText.textContent = "Light Mode";
-      } else {
-        themeIcon.textContent = "🌙";
-        themeText.textContent = "Dark Mode";
+      if (themeText) {
+        themeText.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
       }
     }
   }
@@ -72,18 +69,16 @@ const ToolboxApp = (() => {
         content.classList.toggle("active", isActive);
       });
 
-      // If switching to QR code, refresh render
       if (tabId === "qrcode") {
         QRCodeTool.renderQR();
       }
     }
 
-    // Expose switchTab globally
     ToolboxApp.switchTab = switchTab;
   }
 
   // --- Toast Notifications ---
-  function showToast(message, duration = 2600) {
+  function showToast(message, duration = 2200) {
     if (!toastContainer) return;
 
     const toast = document.createElement("div");
@@ -102,23 +97,19 @@ const ToolboxApp = (() => {
   // --- Keyboard Shortcuts ---
   function initKeyboardShortcuts() {
     window.addEventListener("keydown", (e) => {
-      // Don't intercept when user is typing in input or textarea
       const tag = e.target.tagName.toLowerCase();
       if (tag === "input" || tag === "textarea") return;
 
-      // Numbers 1, 2, 3 to switch tabs
-      if (e.key === "1") {
-        ToolboxApp.switchTab("password");
-      } else if (e.key === "2") {
-        ToolboxApp.switchTab("qrcode");
-      } else if (e.key === "3") {
-        ToolboxApp.switchTab("analyzer");
+      const tabs = ["password", "qrcode", "analyzer", "json", "color"];
+      const keyNum = parseInt(e.key, 10);
+      if (keyNum >= 1 && keyNum <= tabs.length) {
+        ToolboxApp.switchTab(tabs[keyNum - 1]);
       } else if (e.code === "Space" || e.key === "r" || e.key === "R") {
         const activeTab = document.querySelector(".tab-btn.active")?.dataset.tab;
         if (activeTab === "password") {
           e.preventDefault();
           PasswordGenerator.generate();
-          showToast("ახალი პაროლი გენერირებულია! 🔄");
+          showToast("ახალი პაროლი გენერირებულია");
         }
       }
     });
@@ -127,7 +118,6 @@ const ToolboxApp = (() => {
   return { init, showToast };
 })();
 
-// Initialize on DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
   window.ToolboxApp = ToolboxApp;
   ToolboxApp.init();
